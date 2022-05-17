@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "weapon_types".
@@ -29,7 +30,7 @@ class WeaponTypes extends \yii\db\ActiveRecord
         return [
             [['type_name'], 'required'],
             [['type_name'], 'string', 'max' => 20],
-            [['caliber'], 'string', 'max' => 5],
+            [['caliber'], 'string', 'max' => 10],
         ];
     }
 
@@ -40,8 +41,8 @@ class WeaponTypes extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'type_name' => 'Type Name',
-            'caliber' => 'Caliber',
+            'type_name' => 'Тип зброї',
+            'caliber' => 'Калібр',
         ];
     }
 
@@ -52,5 +53,13 @@ class WeaponTypes extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \app\models\query\WeaponTypesQuery(get_called_class());
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypeList(): array
+    {
+        return WeaponTypes::find()->all();
     }
 }

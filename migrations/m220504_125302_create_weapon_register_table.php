@@ -14,8 +14,8 @@ class m220504_125302_create_weapon_register_table extends Migration
     {
         $this->createTable('{{%weapon_register}}', [
             'id' => $this->primaryKey(),
-            'employee_id' => $this->integer(11)->notNull(),
-            'weapon_type' => $this->string(10)->notNull(),
+            'employee_id' => $this->integer(11),
+            'weapon_type_id' => $this->integer(11)->notNull(),
             'caliber' => $this->string(5),
             'weapon_number' => $this->string(20)->notNull()->unique(),
             'count_given_magazine' => $this->integer(2)->notNull()->defaultValue(0),
@@ -23,7 +23,7 @@ class m220504_125302_create_weapon_register_table extends Migration
             'count_returned_magazine' => $this->integer(2)->notNull()->defaultValue(0),
             'date_of_returned' => $this->timestamp(),
             'notice' => $this->text()->null(),
-            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_DATE'),
             'updated_at' => $this->timestamp()->null(),
             'deleted_at' => $this->timestamp()->null()->defaultExpression('NULL')
         ]);

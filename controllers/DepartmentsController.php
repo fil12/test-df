@@ -81,6 +81,7 @@ class DepartmentsController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'employees' => ArrayHelper::map(Employee::find()->all(), 'id', 'full_name')
         ]);
     }
 
@@ -104,7 +105,7 @@ class DepartmentsController extends Controller
             'employees' => ArrayHelper::map(Employee::find()->all(), 'id', 'full_name')
         ]);
     }
-    
+
     /**
      * Finds the Department model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

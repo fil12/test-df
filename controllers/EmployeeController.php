@@ -6,9 +6,7 @@ use app\models\Employee;
 use app\models\search\EmployeeSearch;
 use app\services\EmployeeService;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -39,7 +37,7 @@ class EmployeeController extends MainController
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -49,8 +47,13 @@ class EmployeeController extends MainController
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['index', 'create', 'view', 'update', 'delete'],
+                            'actions' => ['index', 'create', 'view', 'update'],
                             'roles' => ['hr']
+                        ],
+                        [
+                            'allow' => true,
+                            'actions' => ['index',  'view'],
+                            'roles' => ['rao']
                         ]
                     ],
                 ],
@@ -66,7 +69,6 @@ class EmployeeController extends MainController
     public function actionIndex()
     {
         $searchModel = new EmployeeSearch();
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -128,20 +130,6 @@ class EmployeeController extends MainController
     }
 
     /**
-     * Deletes an existing Employee model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->softDelete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
      * Finds the Employee model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
@@ -151,6 +139,7 @@ class EmployeeController extends MainController
     protected function findModel($id)
     {
         if (($model = Employee::findOne(['id' => $id])) !== null) {
+
             return $model;
         }
 

@@ -9,7 +9,6 @@ namespace app\commands;
 
 use app\models\User;
 use yii\console\Controller;
-use yii\console\ExitCode;
 
 /**
  * This command echoes the first argument that you have entered.
@@ -19,25 +18,37 @@ use yii\console\ExitCode;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HelloController extends Controller
+class UserController extends Controller
 {
     /**
      * This command echoes what you have entered as the message.
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionIndex($userName, $userPass, $userEmail)
+    public function actionCreate($userName, $userPass, $userEmail)
     {
         $model = new User();
 
         $model->email = $userEmail;
         $model->username = $userName;
-            $model->setPassword($userPass);
+        $model->setPassword($userPass);
 
-            if ($model->save()) {
-                print 'ok';
-            } else {
-                print $model->errors;
-            }
+        if ($model->save()) {
+            print 'ok';
+        } else {
+            print implode(';'.PHP_EOL, $model->errors);
+        }
+    }
+
+    public function actionUpdatePass(string $userName, string $newPass)
+    {
+        $model = User::findOne(['userName' => $userName]);
+        $model->setPassword($newPass);
+
+        if ($model->update()) {
+            print 'ok';
+        } else {
+            print implode(';'.PHP_EOL, $model->errors);
+        }
     }
 }

@@ -4,11 +4,13 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Department */
+/** @var $employees */
 
-$this->title = 'Update Department: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Departments', 'url' => ['index']];
+
+$this->title = 'Оновити підрозділ: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Підрозділи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Оновити';
 ?>
 <div class="department-update">
 
@@ -16,6 +18,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'employees' => $employees
     ]) ?>
 
 </div>

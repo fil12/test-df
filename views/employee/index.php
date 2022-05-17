@@ -1,11 +1,10 @@
 <?php
 
-use app\models\Employee;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel \app\models\search\EmployeeSearch */
@@ -24,37 +23,73 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php Pjax::begin(); ?>
 
-    <?= GridView::widget([
+    <?=
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-
+        'tableOptions' => [
+            'class' => 'table-responsive  table-striped table-bordered text-justify text-center'
+        ],
+        'options' => [],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'doc_number',
             'itn',
-//            'first_name',
-//            'second_name',
-            'last_name',
+            'full_name',
             'pasport_number',
             'real_place',
             'phone_number',
+            [
+                'attribute' => 'departmentName',
+                'value' => function ($model) {
+                    return $model->department->name ?? null;
+                },
+                'label' => 'назва підрозділу'
+
+            ],
             'notice:ntext',
-            'deleted_at',
+//            'deleted_at',
             [
                 'class' => ActionColumn::class,
                 'template' => '{contract} {view} {update} {delete}',
-
-                'buttons' => ['contract' => function ($url, $model) {
-
-                    return Html::a('<i class="fa fa-file"></i>',
-                        ['contracts/update', 'id' => $model->contract->id],
-                        [
+                'header'=>'Дії',
+                'buttons' => [
+                    'contract' => function ($url, $model) {
+                        return Html::a('<i class="fa fa-file"></i>',
+                            ['contracts/view', 'id' => $model->contract->id],
+                            [
                                 'title' => 'contract',
                                 'data-pjax' => '0'
-                        ]
-                    );
-                }]
+                            ]
+                        );
+                    },
+                    'update' => function ($url, $model) {
+                        return Yii::$app->user->can('hr') ? Html::a(
+                            '<i class="fa fa-pencil"></i>',
+                            ['employee/update', 'id' => $model->id],
+                            [
+                                'title' => 'contract',
+                                'data-pjax' => '0'
+                            ]
+                        )
+                            :
+                            '';
+                    },
+                    'delete' => function ($url, $model) {
+                        return Yii::$app->user->can('hr') ? Html::a(
+                            '<i class="fa fa-bucket"></i>',
+                            ['employee/delete', 'id' => $model->id],
+                            [
+                                'title' => 'contract',
+                                'data-pjax' => '0'
+                            ]
+                        )
+                            :
+                            '';
+                    },
+
+                ]
             ],
         ],
     ]); ?>

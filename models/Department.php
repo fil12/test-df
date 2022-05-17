@@ -14,8 +14,9 @@ use Yii;
  * @property int|null $status
  * @property string|null $notice
  *
- * @property Employees[] $employees
- * @property Employees[] $employees0
+ * @property Employee[] $member
+ * @property Employee   $commander
+ * @property Employee[] $detachedMembers
  */
 class Department extends \yii\db\ActiveRecord
 {
@@ -48,11 +49,12 @@ class Department extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'commander_id' => 'Commander ID',
-            'city' => 'City',
-            'status' => 'Status',
-            'notice' => 'Notice',
+            'name' => 'Назва підрозділу',
+            'commander_id' => 'Идентифікатор командира',
+            'commander' => 'Командир підрозділу',
+            'city' => 'Місто базування',
+            'status' => 'Статус',
+            'notice' => 'Примітки',
         ];
     }
 
@@ -61,9 +63,9 @@ class Department extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|\app\models\query\EmployeesQuery
      */
-    public function getEmployees()
+    public function getMembers()
     {
-        return $this->hasMany(Employees::className(), ['department_id' => 'id']);
+        return $this->hasMany(Employee::className(), ['department_id' => 'id']);
     }
 
     /**
@@ -71,9 +73,14 @@ class Department extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|\app\models\query\EmployeesQuery
      */
-    public function getEmployees0()
+    public function getDetachedMembers()
     {
-        return $this->hasMany(Employees::className(), ['detached_to_department' => 'id']);
+        return $this->hasMany(Employee::className(), ['detached_to_department' => 'id']);
+    }
+
+    public function getCommander()
+    {
+        return $this->hasOne(Employee::class, ['id' => 'commander_id']);
     }
 
     /**

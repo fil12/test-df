@@ -2,17 +2,33 @@
 
 namespace app\controllers;
 
-use app\models\WeaponRegister;
 use app\models\search\WeaponRegisterSearch;
+use app\models\WeaponRegister;
+use app\services\WeaponService;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * WeaponRegisterController implements the CRUD actions for WeaponRegister model.
  */
 class WeaponRegisterController extends Controller
 {
+
+    /** @var WeaponService */
+    public $weaponService;
+
+    /**
+     * @param $weaponService
+     */
+    public function __construct($id, $module, $config, WeaponService $weaponService)
+    {
+        parent::__construct($id, $module, $config);
+        $this->weaponService = $weaponService;
+    }
+
+
     /**
      * @inheritDoc
      */
@@ -25,6 +41,16 @@ class WeaponRegisterController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'actions' => ['index', 'view', 'create', 'update'],
+                            'roles' => ['rao']
+                        ],
                     ],
                 ],
             ]
@@ -65,20 +91,17 @@ class WeaponRegisterController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($employeeId)
     {
-        $model = new WeaponRegister();
+        $record = $this->weaponService->createRecord($this->request, $employeeId);
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+            return $this->redirect(['employee/view', 'id' => $employeeId]);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $record,
+            'employee' => $this->weaponService->getEmployeeForWeapon($employeeId)
         ]);
     }
 
@@ -89,7 +112,7 @@ class WeaponRegisterController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $employeeId)
     {
         $model = $this->findModel($id);
 
@@ -99,21 +122,8 @@ class WeaponRegisterController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'employee' => $this->weaponService->getEmployeeForWeapon($employeeId)
         ]);
-    }
-
-    /**
-     * Deletes an existing WeaponRegister model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

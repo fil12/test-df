@@ -1,5 +1,7 @@
 <?php
 
+use app\models\Department;
+use app\models\enum\DepartmentStatusEnum;
 use yii\db\Migration;
 
 /**
@@ -9,82 +11,120 @@ class m220512_140041_seeding_to_departments extends Migration
 {
     private $data = [
         [
-            'name'=>'1 рота'
+            'name' => '1 рота',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Барвінок'
+            'name' => '2 рота',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Башта',
+            'name' => 'Барвінок',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'БСШ № 1',
+            'name' => 'Башта',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'БСШ № 2',
+            'name' => 'БСШ № 1',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Грінхілс',
+            'name' => 'БСШ № 2',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Дзвінкове',
+            'name' => 'Грінхілс',
+            'dislocation' => 'Тарасівка'
         ],
         [
-            'name'=>'Жорнівка',
+            'name' => 'Дзвінкове',
+            'dislocation' => 'Дзвінкове'
         ],
         [
-            'name'=>'Забір\'я',
+            'name' => 'Жорнівка',
+            'dislocation' => 'Жорнівка'
         ],
         [
-            'name'=>'Заслон',
+            'name' => 'Забір\'я',
+            'dislocation' => 'Забір\'я'
         ],
         [
-            'name'=>'Інженерно-саперний взвод',
+            'name' => 'Заслон',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Княжичі',
+            'name' => 'Інженерно-саперний взвод',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Малютянка, С/Р',
+            'name' => 'Княжичі',
+            'dislocation' => 'Княжичі'
         ],
         [
-            'name'=>'Металеві меблі',
+            'name' => 'Коменд.взвод',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Новосілки',
+            'name' => 'Малютянка, С/Р',
+            'dislocation' => 'Малютянка'
         ],
         [
-            'name'=>'Очисні',
+            'name' => 'Металеві меблі',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'П\'ятачок',
+            'name' => 'Новосілки',
+            'dislocation' => 'Новосілки'
         ],
         [
-            'name'=>'Патон',
+            'name' => 'Очисні',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Розвідка',
+            'name' => 'П\'ятачок',
+            'dislocation' => 'Тарасівка'
         ],
         [
-            'name'=>'СПВБ',
+            'name' => 'Патон',
+            'dislocation' => 'Малютянка'
         ],
         [
-            'name'=>'Технікум',
+            'name' => 'Розвідка',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Тролейбус',
+            'name' => 'СПВБ',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Тягова',
+            'name' => 'Технікум',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Фора Ж/Д',
+            'name' => 'Тролейбус',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'ЦНАП',
+            'name' => 'Тягова',
+            'dislocation' => 'Боярка'
         ],
         [
-            'name'=>'Шиномонтаж'
+            'name' => 'Фора Ж/Д',
+            'dislocation' => 'Боярка'
+        ],
+        [
+            'name' => 'ЦНАП',
+            'dislocation' => 'Боярка'
+        ],
+        [
+            'name' => 'Шиномонтаж',
+            'dislocation' => 'Боярка'
+        ],
+        [
+            'name' => 'Штаб',
+            'dislocation' => 'Боярка'
         ]
     ];
 
@@ -93,7 +133,14 @@ class m220512_140041_seeding_to_departments extends Migration
      */
     public function safeUp()
     {
+        foreach ($this->data as $item) {
+            $department = new Department();
+            $department->name = $item['name'];
+            $department->city = $item['dislocation'];
+            $department->status = DepartmentStatusEnum::ACTIVE['value'];
 
+            $department->save();
+        }
     }
 
     /**
@@ -103,21 +150,6 @@ class m220512_140041_seeding_to_departments extends Migration
     {
         echo "m220512_140041_seeding_to_departments cannot be reverted.\n";
 
-        return false;
+        return true;
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m220512_140041_seeding_to_departments cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

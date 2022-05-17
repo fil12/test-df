@@ -1,11 +1,12 @@
 <?php
 
 use app\models\Contract;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
@@ -16,9 +17,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Contract', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?php Pjax::begin(); ?>
 
@@ -27,23 +25,45 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'employee_id',
-            'status',
-            'contract_date',
+//            'id',
+            [
+                'attribute' => 'employee.full_name'
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function ($model) {
+                    return \app\models\enum\ContractStatusEnum::getCurrentStatusTitle($model->status);
+                }
+            ],
+
+            [
+                    'attribute' => 'contract_date',
+                'value' => function ($model) {
+                    return null !== $model->contract_date ? date('Y-m-d', $model->contract_date) : '-';
+                }
+            ],
             'termination_date',
-            //'termination_description',
-            //'weapon_number_contract',
-            //'fastiv_formation',
-            //'notice:ntext',
-            //'created_at',
-            //'updated_at',
-            //'deleted_at',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Contract $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                },
+                'template' => '{view} {update}',
+                'header' => 'Дії',
+                'buttons' => [
+                    'update' => function ($url, $model) {
+                        return Yii::$app->user->can('hr') ? Html::a(
+                            '<i class="fa fa-pencil"></i>',
+                            ['contracts/update', 'id' => $model->id],
+                            [
+                                'title' => 'contract',
+                                'data-pjax' => '0'
+                            ]
+                        )
+                            :
+                            '';
+                    },
+                ]
             ],
         ],
     ]); ?>

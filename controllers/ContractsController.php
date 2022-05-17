@@ -50,8 +50,13 @@ class ContractsController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['index', 'create', 'update', 'delete'],
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
                             'roles' => ['hr']
+                        ],
+                        [
+                            'allow' => true,
+                            'actions' => ['index', 'view'],
+                            'roles' => ['rao']
                         ]
                     ],
                 ],
@@ -68,16 +73,6 @@ class ContractsController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Contract::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
         ]);
 
         return $this->render('index', [
@@ -142,20 +137,6 @@ class ContractsController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Deletes an existing Contract model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

@@ -1,6 +1,9 @@
 <?php
 
+use app\models\Department;
 use kartik\date\DatePicker;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -17,11 +20,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'itn')->textInput()->label('ІПН') ?>
 
-    <?= $form->field($model, 'first_name')->textInput(['maxlength' => true])->label("Ім'я") ?>
-
-    <?= $form->field($model, 'second_name')->textInput(['maxlength' => true])->label('По батькові') ?>
-
-    <?= $form->field($model, 'last_name')->textInput(['maxlength' => true])->label('Фамілія') ?>
+    <?= $form->field($model, 'full_name')->textInput(['maxlength' => true])->label('ПІБ') ?>
 
     <?= $form->field($model, 'pasport_number')->textInput(['maxlength' => true])->label('Серія та номер паспорту') ?>
 
@@ -40,7 +39,25 @@ use yii\widgets\ActiveForm;
                     ]
                 ])->label('Дата Видачі') ?>
 
-    <?= $form->field($model, 'numder_military_doc')->textInput(['maxlength' => true])->label('Номер Війскового') ?>
+    <?=  $form->field($model, 'department_id')->widget(Select2::class, [
+        'data' => ArrayHelper::map(Department::find()->all(), 'id', 'name'),
+        'language' => 'ua',
+        'options' => ['placeholder' => 'Вибрати підрозділ'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ])->label('Підрозділ'); ?>
+
+    <?=  $form->field($model, 'detached_to_department')->widget(Select2::class, [
+        'data' => ArrayHelper::map(Department::find()->all(), 'id', 'name'),
+        'language' => 'ua',
+        'options' => ['placeholder' => 'Вибрати підрозділ', 'label' => 'Відкомандировано до підрозділу'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ]); ?>
+
+    <?= $form->field($model, 'number_military_doc')->textInput(['maxlength' => true])->label('Номер Війскового') ?>
 
     <?= $form->field($model, 'place_in_pasport')->textInput(['maxlength' => true])->label('Місце реєстрації') ?>
 
@@ -49,6 +66,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true])->label('Номер телефону')->hint('у фарматі 0501001010') ?>
 
     <?= $form->field($model, 'notice')->textarea(['rows' => 6])->label('Примітки') ?>
+
 
     <div class="form-group">
         <?= Html::submitButton('Зберегти', ['class' => 'btn btn-success']) ?>

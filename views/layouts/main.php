@@ -28,23 +28,24 @@ AppAsset::register($this);
 
 <header>
     <?php
-        NavBar::begin([
-            'brandLabel' => Yii::$app->user->isGuest ? false : "ДФ БТГ №1 ім. Євгена Коновальця",
-            'brandUrl' => Yii::$app->homeUrl,
-            'options' => [
-                'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-            ],
-        ]);
-
+    NavBar::begin([
+        'brandLabel' => Yii::$app->user->isGuest ? false : "ДФ БТГ №1 ім. Євгена Коновальця",
+        'brandUrl' => Yii::$app->homeUrl,
+        'options' => [
+            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+        ],
+    ]);
 
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
         'items' => [
-            Yii::$app->user->can('hr') ? (['label' => 'Люди', 'url' => ['/employee/']]) : '',
+            false === Yii::$app->user->isGuest ? (['label' => 'Люди', 'url' => ['/employee/']]) : '',
             Yii::$app->user->can('hr') ? (['label' => 'Контракти', 'url' => ['/contracts/']]) : '',
+            Yii::$app->user->can('od') ? (['label' => 'Підрозділи', 'url' => ['/departments/']]) : '',
+            Yii::$app->user->can('rao') ? (['label' => 'Реєстр зброї', 'url' => ['/weapon-register/']]) : '',
             Yii::$app->user->can('admin') ? (['label' => 'Users', 'url' => ['/user/']]) : '',
             Yii::$app->user->isGuest ? (
-                ['label' => 'Вхід', 'url' => ['/site/login']]
+            ['label' => 'Вхід', 'url' => ['/site/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])

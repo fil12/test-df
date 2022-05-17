@@ -4,11 +4,12 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\WeaponRegister */
+/* @var $employee app\models\Employee */
 
-$this->title = 'Update Weapon Register: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Weapon Registers', 'url' => ['index']];
+$this->title = 'Оновити дані: ' . $model->employee->getFullName();
+$this->params['breadcrumbs'][] = ['label' => 'Реєстр зброї', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Оновити дані про зброю';
 ?>
 <div class="weapon-register-update">
 
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'employee' => $employee
     ]) ?>
 
 </div>

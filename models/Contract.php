@@ -38,12 +38,12 @@ class Contract extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['employee_id', 'status', 'contract_date', 'termination_date', 'fastiv_formation', 'created_at', 'updated_at'], 'required'],
+            [['employee_id', 'status' ], 'required'],
             [['employee_id', 'contract_date', 'termination_date', 'fastiv_formation', 'created_at', 'updated_at', 'deleted_at'], 'integer'],
             [['notice'], 'string'],
-            [['status'], 'string', 'max' => 10],
+            [['status'], 'integer'],
             [['termination_description'], 'string', 'max' => 255],
-            [['weapon_number_contract'], 'string', 'max' => 20],
+            [['weapon_number_contract'], 'string', 'max' => 50],
             [['employee_id'], 'unique'],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['employee_id' => 'id']],
         ];
@@ -56,14 +56,14 @@ class Contract extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'employee_id' => 'Employee ID',
-            'status' => 'Status',
-            'contract_date' => 'Contract Date',
-            'termination_date' => 'Termination Date',
-            'termination_description' => 'Termination Description',
-            'weapon_number_contract' => 'Weapon Number Contract',
-            'fastiv_formation' => 'Fastiv Formation',
-            'notice' => 'Notice',
+            'employee_id' => 'Ідентифікатор людини',
+            'status' => 'Статус',
+            'contract_date' => 'Дата підпиcання контракту',
+            'termination_date' => 'Дата розірвання контракту',
+            'termination_description' => 'Причина розірвання контракту',
+            'weapon_number_contract' => 'Номер зброї у контракті',
+            'fastiv_formation' => 'Формування на фастів',
+            'notice' => 'Примітки',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted_at' => 'Deleted At',

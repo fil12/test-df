@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Department */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Departments', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Підрозділ', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,24 +16,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Оновити', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
             'name',
-            'commander_id',
+            'commander.full_name',
             'city',
-            'status',
+            [
+                    'attribute' => 'status',
+                    'value' => \app\models\enum\DepartmentStatusEnum::getCurrentStatusTitle($model->status)
+            ],
             'notice:ntext',
         ],
     ]) ?>

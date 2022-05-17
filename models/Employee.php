@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\behaviors\TrimBehavior;
 use Yii;
 
 /**
@@ -10,13 +11,11 @@ use Yii;
  * @property int $id
  * @property int $doc_number
  * @property int|null $itn
- * @property string $first_name
- * @property string $second_name
- * @property string $last_name
+ * @property string $full_name
  * @property string $pasport_number
  * @property string|null $pasport_issued
  * @property string|null $pasport_issued_date
- * @property string|null $numder_military_doc
+ * @property string|null $number_military_doc
  * @property string|null $place_in_pasport
  * @property string|null $real_place
  * @property string $phone_number
@@ -24,6 +23,10 @@ use Yii;
  * @property string $created_at
  * @property string|null $updated_at
  * @property string|null $deleted_at
+ *
+ * @property Contract $contract
+ * @property Department $department
+ * @property Department $detachedTo
  */
 class Employee extends \yii\db\ActiveRecord
 {
@@ -36,17 +39,30 @@ class Employee extends \yii\db\ActiveRecord
     }
 
     /**
+     * Returns a list of behaviors that this component should behave as.
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TrimBehavior::class,
+            ],
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['doc_number', 'first_name', 'second_name', 'last_name', 'pasport_number', 'phone_number'], 'required'],
+            [['doc_number',  'full_name'], 'required'],
             [['doc_number', 'itn'], 'integer'],
-            [['pasport_issued_date', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['notice'], 'string'],
-            [['first_name', 'second_name', 'last_name', 'pasport_number'], 'string', 'max' => 32],
-            [['pasport_issued', 'numder_military_doc', 'place_in_pasport', 'real_place'], 'string', 'max' => 255],
+            [['full_name', 'pasport_number'], 'string', 'max' => 50],
+            [['pasport_issued', 'number_military_doc', 'place_in_pasport', 'real_place'], 'string', 'max' => 255],
             [['phone_number'], 'string', 'max' => 12],
         ];
     }
@@ -60,16 +76,16 @@ class Employee extends \yii\db\ActiveRecord
             'id' => 'ID',
             'doc_number' => 'Номер посвідчення',
             'itn' => 'ІПН',
-            'first_name' => 'Ім\'я',
-            'second_name' => 'По батькові',
-            'last_name' => 'Фамілія',
+            'full_name' => 'ПІБ',
             'pasport_number' => 'Серія та номер паспорта',
             'pasport_issued' => 'Ким видан',
             'pasport_issued_date' => 'Дата видачі',
-            'numder_military_doc' => 'Номер війскового квитка',
+            'number_military_doc' => 'Номер війскового квитка',
             'place_in_pasport' => 'Місце реєстрації',
             'real_place' => 'Місце проживання',
             'phone_number' => 'Номер телефону',
+            'department' => 'Підрозділ',
+            'detached_to_department' => 'Відкомандирован до підрозділу',
             'notice' => 'Примітки',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -86,31 +102,53 @@ class Employee extends \yii\db\ActiveRecord
         return new \app\models\query\EmployeesQuery(get_called_class());
     }
 
-    public function softDelete()
+    /**
+     * @return bool
+     */
+    public function softDelete(): bool
     {
         $this->deleted_at = (new \DateTime())->format('Y-m-d');
 
-        return true;
+        return $this->save();
     }
 
-    public function search($params)
+    /**
+     * @return string
+     */
+    public function getFullName(): string
     {
-        $query = Post::find();
+        return $this->full_name;
+    }
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getContract(): \yii\db\ActiveQuery
+    {
+        return $this->hasOne(Contract::class, ['employee_id' =>'id' ]);
+    }
 
-        // загружаем данные формы поиска и производим валидацию
-        if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
-        }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWeapons(): \yii\db\ActiveQuery
+    {
+        return $this->hasMany(WeaponRegister::class, ['employee_id' => 'id']);
+    }
 
-        // изменяем запрос добавляя в его фильтрацию
-        $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment(): \yii\db\ActiveQuery
+    {
+        return $this->hasOne(Department::class, ['id'=> 'department_id']);
+    }
 
-        return $dataProvider;
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDetachedTo(): \yii\db\ActiveQuery
+    {
+        return $this->hasOne(Department::class, ['id' => 'detached_to_department']);
     }
 }

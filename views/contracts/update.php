@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Contract */
 
-$this->title = 'Update Contract: ' . $model->id;
+$this->title = 'Оновити дані контракту: ' . $model->employee->getFullName();
 $this->params['breadcrumbs'][] = ['label' => 'Контракти', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Оновити дані';
 ?>
 <div class="contract-update">
 

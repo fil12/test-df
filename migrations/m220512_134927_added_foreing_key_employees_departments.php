@@ -13,7 +13,7 @@ class m220512_134927_added_foreing_key_employees_departments extends Migration
     public function safeUp()
     {
         $this->addForeignKey(
-            'fk-employee_department_id',
+            'fk-employees-department_id',
             'employees',
             'department_id',
             'departments',
@@ -22,7 +22,7 @@ class m220512_134927_added_foreing_key_employees_departments extends Migration
         );
 
         $this->addForeignKey(
-            'fk-employee_detached_to_department',
+            'fk-employees-detached_to_department',
             'employees',
             'detached_to_department',
             'departments',
@@ -37,7 +37,7 @@ class m220512_134927_added_foreing_key_employees_departments extends Migration
     public function safeDown()
     {
         $this->dropForeignKey(
-            'fk-employee_department_id',
+            'fk-employees_department_id',
             'employees'
         );
 

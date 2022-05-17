@@ -4,9 +4,10 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\WeaponRegister */
+/* @var $employee app\models\Employee */
 
-$this->title = 'Create Weapon Register';
-$this->params['breadcrumbs'][] = ['label' => 'Weapon Registers', 'url' => ['index']];
+$this->title = 'Додати зброю: '. $employee->getFullName();
+$this->params['breadcrumbs'][] = ['label' => 'Реєстр зброї', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="weapon-register-create">
@@ -15,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'employee' => $employee
     ]) ?>
 
 </div>

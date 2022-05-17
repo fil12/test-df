@@ -1,7 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\form;
 
+use app\models\User;
 use Yii;
 use yii\base\Model;
 
@@ -68,7 +69,7 @@ class LoginForm extends Model
     /**
      * Finds user by [[username]]
      *
-     * @return User|null
+     * @return \yii\db\ActiveQueryInterface
      */
     public function getUser()
     {

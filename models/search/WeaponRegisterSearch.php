@@ -11,6 +11,9 @@ use app\models\WeaponRegister;
  */
 class WeaponRegisterSearch extends WeaponRegister
 {
+    public $type_name;
+    public $employeeName;
+    public $employeeItn;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +21,7 @@ class WeaponRegisterSearch extends WeaponRegister
     {
         return [
             [['id', 'employee_id', 'count_given_magazine', 'count_returned_magazine'], 'integer'],
-            [['weapon_type', 'caliber', 'weapon_number', 'date_of_given', 'date_of_returned', 'notice', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
+            [['type_name', 'employeeName', 'employeeItn', 'caliber', 'weapon_number', 'date_of_given', 'date_of_returned', 'notice', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
         ];
     }
 
@@ -41,12 +44,33 @@ class WeaponRegisterSearch extends WeaponRegister
     public function search($params)
     {
         $query = WeaponRegister::find();
-
+        $query->joinWith(['weaponType', 'employee']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
+
+        $dataProvider->sort->attributes['type_name'] = [
+            // The tables are the ones our relation are configured to
+            // in my case they are prefixed with "tbl_"
+            'asc' => ['weapon_types.type_name' => SORT_ASC],
+            'desc' => ['weapon_types.type_name' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['employeeName'] = [
+            // The tables are the ones our relation are configured to
+            // in my case they are prefixed with "tbl_"
+            'asc' => ['employees.last_name' => SORT_ASC],
+            'desc' => ['employees.last_name' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['employeeItn'] = [
+            // The tables are the ones our relation are configured to
+            // in my case they are prefixed with "tbl_"
+            'asc' => ['weapon_types.type_name' => SORT_ASC],
+            'desc' => ['weapon_types.type_name' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -68,8 +92,10 @@ class WeaponRegisterSearch extends WeaponRegister
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
         ]);
-
-        $query->andFilterWhere(['like', 'weapon_type', $this->weapon_type])
+//dump($this->weaponType);
+        $query->andFilterWhere(['=', 'weapon_types.type_name', $this->type_name])
+            ->andFilterWhere(['like', 'employees.last_name', $this->employeeName])
+            ->andFilterWhere(['like', 'employees.itn', $this->employeeItn])
             ->andFilterWhere(['like', 'caliber', $this->caliber])
             ->andFilterWhere(['like', 'weapon_number', $this->weapon_number])
             ->andFilterWhere(['like', 'notice', $this->notice]);

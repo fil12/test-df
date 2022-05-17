@@ -2,7 +2,63 @@
 
 namespace app\models\search;
 
-interface EmployeeSearch
-{
+use app\models\Employee;
+use Yii;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
 
+class EmployeeSearch extends Employee
+{
+    public $departmentName;
+    public function rules()
+    {
+        // только поля определенные в rules() будут доступны для поиска
+        return [
+            [['itn', 'doc_number'], 'integer'],
+            [['full_name', 'pasport_number', 'phone_number', 'departmentName'], 'safe'],
+        ];
+    }
+
+    /**
+     * @return array|array[]
+     */
+    public function scenarios()
+    {
+        // bypass scenarios() implementation in the parent class
+        return Model::scenarios();
+    }
+
+    /**
+     * @param $params
+     * @return ActiveDataProvider
+     */
+    public function search($params)
+    {
+        $query = Employee::find()
+            ->innerJoinWith('contract', true)
+            ->joinWith('department', true);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+                'pageSize' => 100
+            ]
+        ]);
+        $this->load($params);
+        // загружаем данные формы поиска и производим валидацию
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        // изменяем запрос добавляя в его фильтрацию
+        $query->andFilterWhere(['itn' => $this->itn]);
+        $query->andFilterWhere(['doc_number' => $this->doc_number]);
+        $query->andFilterWhere(['departments.name' => $this->departmentName]);
+        $query->andFilterWhere(['like', 'full_name', $this->full_name]);
+        $query->andFilterWhere(['like', 'pasport_number', $this->pasport_number]);
+        $query->andFilterWhere(['like', 'phone_number', $this->phone_number]);
+
+        return $dataProvider;
+    }
 }

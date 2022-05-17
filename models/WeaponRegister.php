@@ -3,13 +3,15 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "weapon_register".
  *
  * @property int $id
  * @property int $employee_id
- * @property string $weapon_type
+ * @property string $weapon_type_id
  * @property string|null $caliber
  * @property string $weapon_number
  * @property int $count_given_magazine
@@ -22,9 +24,11 @@ use Yii;
  * @property string|null $deleted_at
  *
  * @property Employee $employee
+ * @property WeaponTypes $weaponType
  */
 class WeaponRegister extends \yii\db\ActiveRecord
 {
+//    public $weaponType;
     /**
      * {@inheritdoc}
      */
@@ -39,18 +43,32 @@ class WeaponRegister extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['employee_id', 'weapon_type', 'weapon_number'], 'required'],
+            [['employee_id', 'weapon_type_id', 'weapon_number'], 'required'],
             [['employee_id', 'count_given_magazine', 'count_returned_magazine'], 'integer'],
             [['date_of_given', 'date_of_returned', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['notice'], 'string'],
-            [['weapon_type'], 'string', 'max' => 10],
             [['caliber'], 'string', 'max' => 5],
             [['weapon_number'], 'string', 'max' => 20],
             [['weapon_number'], 'unique'],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['employee_id' => 'id']],
+            [['weapon_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => WeaponTypes::className(), 'targetAttribute' => ['employee_id' => 'id']],
         ];
     }
 
+    /**
+     * @return array[]
+     */
+    public function behaviors(): array
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -58,15 +76,15 @@ class WeaponRegister extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'employee_id' => 'Employee ID',
-            'weapon_type' => 'Weapon Type',
-            'caliber' => 'Caliber',
-            'weapon_number' => 'Weapon Number',
-            'count_given_magazine' => 'Count Given Magazine',
-            'date_of_given' => 'Date Of Given',
-            'count_returned_magazine' => 'Count Returned Magazine',
-            'date_of_returned' => 'Date Of Returned',
-            'notice' => 'Notice',
+            'employee_id' => 'Идентифікатор людини',
+            'weapon_type_id' => 'Тип зброї',
+            'caliber' => 'Калібр',
+            'weapon_number' => 'Номер зброї',
+            'count_given_magazine' => 'Кількість віданих магазинів',
+            'date_of_given' => 'Дата видачі',
+            'count_returned_magazine' => 'Кількість поверненних магазинів',
+            'date_of_returned' => 'Дата повернення',
+            'notice' => 'Примітки',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted_at' => 'Deleted At',
@@ -81,6 +99,14 @@ class WeaponRegister extends \yii\db\ActiveRecord
     public function getEmployee()
     {
         return $this->hasOne(Employee::className(), ['id' => 'employee_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWeaponType(): \yii\db\ActiveQuery
+    {
+        return $this->hasOne(WeaponTypes::class, ['id' => 'weapon_type_id']);
     }
 
     /**
