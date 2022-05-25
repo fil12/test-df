@@ -15,7 +15,7 @@ class EmployeeSearch extends Employee
         // только поля определенные в rules() будут доступны для поиска
         return [
             [['itn', 'doc_number'], 'integer'],
-            [['full_name', 'pasport_number', 'phone_number', 'departmentName'], 'safe'],
+            [['full_name', 'passport_number', 'phone_number', 'departmentName'], 'safe'],
         ];
     }
 
@@ -45,6 +45,16 @@ class EmployeeSearch extends Employee
                 'pageSize' => 100
             ]
         ]);
+
+
+
+        $dataProvider->sort->attributes['departmentName'] = [
+            // The tables are the ones our relation are configured to
+            // in my case they are prefixed with "tbl_"
+            'asc' => ['departments.name' => SORT_ASC],
+            'desc' => ['departments.name' => SORT_DESC],
+        ];
+
         $this->load($params);
         // загружаем данные формы поиска и производим валидацию
         if (!($this->load($params) && $this->validate())) {
@@ -56,7 +66,7 @@ class EmployeeSearch extends Employee
         $query->andFilterWhere(['doc_number' => $this->doc_number]);
         $query->andFilterWhere(['departments.name' => $this->departmentName]);
         $query->andFilterWhere(['like', 'full_name', $this->full_name]);
-        $query->andFilterWhere(['like', 'pasport_number', $this->pasport_number]);
+        $query->andFilterWhere(['like', 'passport_number', $this->passport_number]);
         $query->andFilterWhere(['like', 'phone_number', $this->phone_number]);
 
         return $dataProvider;

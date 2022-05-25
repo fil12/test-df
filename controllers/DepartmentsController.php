@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Department;
 use app\models\Employee;
 use app\models\search\DepartmentSearch;
+use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -57,8 +58,23 @@ class DepartmentsController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $query = Employee::find()->where(['department_id' => $id]);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'members' => new ActiveDataProvider(
+                [
+                    'query' => $query,
+                    'pagination' => [
+                        'pageSize' => 100,
+                    ],
+                    'sort' => [
+                        'defaultOrder' => [
+                            'full_name' => SORT_ASC,
+                        ]
+                    ],
+                ]
+            )
         ]);
     }
 

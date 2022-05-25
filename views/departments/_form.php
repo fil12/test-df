@@ -30,7 +30,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?=  $form->field($model, 'status')->dropDownList(
+        ArrayHelper::map(\app\models\enum\DepartmentStatusEnum::getAvailable(), 'value','title'),
+
+    ); ?>
 
     <?= $form->field($model, 'notice')->textarea(['rows' => 6]) ?>
 

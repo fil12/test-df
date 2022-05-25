@@ -43,14 +43,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'doc_number',
             'itn',
             'full_name',
-            'pasport_number',
-            'pasport_issued',
-            'pasport_issued_date',
+            'passport_number',
+            'passport_issued',
+            'passport_issued_date',
             'number_military_doc',
-            'place_in_pasport',
+            'place_in_passport',
             'real_place',
-            'phone_number',
             [
+                'attribute' => 'phone_number',
+                'value' => '+38 0' . $model->phone_number
+            ],            [
                 'attribute' => 'department.name',
                 'value' => $model->department->name ?? null
             ],

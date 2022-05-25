@@ -22,15 +22,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'full_name')->textInput(['maxlength' => true])->label('ПІБ') ?>
 
-    <?= $form->field($model, 'pasport_number')->textInput(['maxlength' => true])->label('Серія та номер паспорту') ?>
+    <?= $form->field($model, 'passport_number')->textInput(['maxlength' => true])->label('Серія та номер паспорту') ?>
 
-    <?= $form->field($model, 'pasport_issued')->textInput(['maxlength' => true])->label('Ким видан') ?>
+    <?= $form->field($model, 'passport_issued')->textInput(['maxlength' => true])->label('Ким видан') ?>
 
-    <?= $form->field($model, 'pasport_issued_date')
+    <?= $form->field($model, 'passport_issued_date')
         ->widget(
                 DatePicker::class,
                 [
-                    'name' => 'pasport_issued_date',
+                    'name' => 'passport_issued_date',
                     'value' => date('Y-m-d', strtotime('+2 days')),
                     'options' => ['placeholder' => 'Select issue date ...'],
                     'pluginOptions' => [
@@ -59,7 +59,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'number_military_doc')->textInput(['maxlength' => true])->label('Номер Війскового') ?>
 
-    <?= $form->field($model, 'place_in_pasport')->textInput(['maxlength' => true])->label('Місце реєстрації') ?>
+    <?= $form->field($model, 'place_in_passport')->textInput(['maxlength' => true])->label('Місце реєстрації') ?>
 
     <?= $form->field($model, 'real_place')->textInput(['maxlength' => true])->label('Місце проживання') ?>
 
