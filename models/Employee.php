@@ -12,11 +12,11 @@ use Yii;
  * @property int $doc_number
  * @property int|null $itn
  * @property string $full_name
- * @property string $pasport_number
- * @property string|null $pasport_issued
- * @property string|null $pasport_issued_date
+ * @property string $passport_number
+ * @property string|null $passport_issued
+ * @property string|null $passport_issued_date
  * @property string|null $number_military_doc
- * @property string|null $place_in_pasport
+ * @property string|null $place_in_passport
  * @property string|null $real_place
  * @property string $phone_number
  * @property string|null $notice
@@ -61,8 +61,8 @@ class Employee extends \yii\db\ActiveRecord
             [['doc_number',  'full_name'], 'required'],
             [['doc_number', 'itn'], 'integer'],
             [['notice'], 'string'],
-            [['full_name', 'pasport_number'], 'string', 'max' => 50],
-            [['pasport_issued', 'number_military_doc', 'place_in_pasport', 'real_place'], 'string', 'max' => 255],
+            [['full_name', 'passport_number'], 'string', 'max' => 50],
+            [['passport_issued', 'number_military_doc', 'place_in_passport', 'real_place'], 'string', 'max' => 255],
             [['phone_number'], 'string', 'max' => 12],
         ];
     }
@@ -77,11 +77,11 @@ class Employee extends \yii\db\ActiveRecord
             'doc_number' => 'Номер посвідчення',
             'itn' => 'ІПН',
             'full_name' => 'ПІБ',
-            'pasport_number' => 'Серія та номер паспорта',
-            'pasport_issued' => 'Ким видан',
-            'pasport_issued_date' => 'Дата видачі',
+            'passport_number' => 'Серія та номер паспорта',
+            'passport_issued' => 'Ким видан',
+            'passport_issued_date' => 'Дата видачі',
             'number_military_doc' => 'Номер війскового квитка',
-            'place_in_pasport' => 'Місце реєстрації',
+            'place_in_passport' => 'Місце реєстрації',
             'real_place' => 'Місце проживання',
             'phone_number' => 'Номер телефону',
             'department' => 'Підрозділ',

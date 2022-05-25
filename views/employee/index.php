@@ -37,15 +37,19 @@ $this->params['breadcrumbs'][] = $this->title;
             'doc_number',
             'itn',
             'full_name',
-            'pasport_number',
+            'passport_number',
             'real_place',
-            'phone_number',
             [
+                'attribute' => 'phone_number',
+                'value' => function ($model) {
+                    return '0' . $model->phone_number;
+                }
+            ],            [
                 'attribute' => 'departmentName',
                 'value' => function ($model) {
                     return $model->department->name ?? null;
                 },
-                'label' => 'назва підрозділу'
+                'label' => 'Назва підрозділу'
 
             ],
             'notice:ntext',

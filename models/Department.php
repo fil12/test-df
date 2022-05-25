@@ -14,7 +14,7 @@ use Yii;
  * @property int|null $status
  * @property string|null $notice
  *
- * @property Employee[] $member
+ * @property Employee[] $members
  * @property Employee   $commander
  * @property Employee[] $detachedMembers
  */

@@ -8,14 +8,13 @@
 namespace app\commands;
 
 use app\models\Contract;
+use app\models\Department;
 use app\models\Employee;
 use app\models\enum\ContractStatusEnum;
-use moonland\phpexcel\Excel;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
 use yii\console\Controller;
-use yii\console\ExitCode;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -31,22 +30,12 @@ class ImportController extends Controller
 
     private $pathToFile;
 
-    public function actionIndex()
-    {
-        $message = '
-            
-        ';
-        echo $message . "\n";
-
-        return ExitCode::OK;
-    }
-
     public function actionEmployees()
     {
-        $filePath = 'web/peoples.xlsx';
+        $this->pathToFile = 'web/peoples.xlsx';
 
         $reader = new Xlsx();
-        $spreadsheet = $reader->load($filePath);
+        $spreadsheet = $reader->load($this->pathToFile);
         $sheetData = $spreadsheet->getActiveSheet()->toArray();
 
         foreach ($sheetData as $k=>$item) {
@@ -92,6 +81,42 @@ class ImportController extends Controller
 
         print 'all done!';
         return true;
+    }
+
+    public function actionDepartments()
+    {
+        $this->pathToFile = 'web/departments.xlsx';
+
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load($this->pathToFile);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+        $departments = ArrayHelper::map(Department::find()->all(), 'name', 'id');
+
+        $unknownEmployees = [];
+        $unknownDepartments = [];
+
+        foreach ($sheetData as $item) {
+            $employee = Employee::findOne(['itn' => $item[0]]);
+
+            if (null == $employee) {
+                $lastname = explode(' ', $item[1]);
+                $employee = Employee::find()->where(['like','full_name', $lastname[0]])->one();
+
+                if (null == $employee) {
+                    $unknownEmployees[] = $item;
+                    continue;
+                }
+            }
+
+            if (!array_key_exists($item[6], $departments)) {
+                $unknownDepartments [] = $item;
+                continue;
+            }
+
+            $employee->department_id = $departments[$item[6]];
+            $employee->update();
+        }
     }
 
     public function actionWeaponRegister()
